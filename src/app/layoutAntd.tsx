@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from 'react';
+import React from 'react';
 import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
@@ -13,13 +13,20 @@ import {
   ReadOutlined,
   ContactsOutlined
 } from '@ant-design/icons';
-import { Layout, Menu, Button, theme, FloatButton, Typography, Spin, Flex } from 'antd';
+import { Layout, Menu, Button, theme, FloatButton, Typography, Spin, Flex, Drawer } from 'antd';
 import Image from 'next/image';
 import logo from '../../public/logo.svg';
 import { useRouter } from 'next/navigation';
 const { Title } = Typography;
 
 const { Header, Sider, Content } = Layout;
+
+const itemMenu = [
+  { title: 'Inicio', hash: 'inicio' },
+  { title: 'Servicios', hash: 'servicios' },
+  { title: 'Nosotros', hash: 'nosotros' },
+  { title: 'Contacto', hash: 'contacto' },
+];
 
 var globalWindow: any = typeof window !== 'undefined' ? window : {};
 
@@ -49,6 +56,78 @@ const LayoutAntd = ({ children }: any) => {
     };
   }, []);
 
+  const [open, setOpen] = React.useState(false);
+
+  const showDrawer = () => {
+    setOpen(true);
+  };
+
+  const onClose = () => {
+    setOpen(false);
+  };
+
+  const items = [
+    {
+      key: '/inicio',
+      icon: <HomeOutlined />,
+      label: 'Inicio',
+    },
+    {
+      key: '/servicios',
+      icon: <ToolOutlined />,
+      label: 'Servicios',
+    },
+    {
+      key: '/nosotros',
+      icon: <ProjectOutlined />,
+      label: 'Nosotros',
+    },
+    /* {
+      key: '/portafolio',
+      icon: <ReadOutlined />,
+      label: 'Portafolio',
+    }, */
+    {
+      key: '/contacto',
+      icon: <ContactsOutlined />,
+      label: 'Contacto',
+    },
+  ]
+
+  // observer
+  React.useEffect(() => {
+    let observerChangeHash: IntersectionObserver;
+
+    observerChangeHash = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            globalWindow.history.pushState(null, '', `#${entry.target.id}`);
+            setMenuActive([`/${entry.target.id}`]);
+          }
+        });
+      },
+      {
+        root: null,
+        rootMargin: '0px',
+        threshold: 0.1,
+      }
+    );
+
+    setTimeout(() => {
+      itemMenu.forEach(({ hash }) => {
+        const target = document.getElementById(hash) as HTMLElement;
+        observerChangeHash.observe(target);
+      });
+    }, 2000);
+
+    return () => {
+      observerChangeHash.disconnect();
+    };
+  }, []);
+
+  const [menuActive, setMenuActive] = React.useState(['/inicio']);
+
   if (loading) {
     return (
       <div style={{
@@ -73,12 +152,42 @@ const LayoutAntd = ({ children }: any) => {
     );
   }
 
+
+
+
   return (
     <Layout>
-      <Sider trigger={null} collapsible collapsed={isMovil} style={{
+      <Drawer placement="left" title="INGENIERÍA CIVIL" width={240} onClose={onClose} open={open}>
+        <Sider trigger={null} collapsible style={{
+          position: "relative",
+          background: "#001529",
+        }}>
+          <div style={{ width: "100%", padding: "1rem", margin: "auto", textAlign: "center" }}>
+            <a href={location.origin}>
+              <Image src={logo}
+                layout="responsive"
+                alt="Logo"
+                width={300}
+                height={176} />
+            </a>
+          </div>
+
+          <Menu
+            theme="dark"
+            mode="inline"
+            selectedKeys={menuActive}
+            onClick={(e) => {
+              router.push(e.key.replace("/", "#"));
+              setMenuActive([e.key]);
+            }}
+            items={items}
+          />
+        </Sider>
+      </Drawer>
+
+      <Sider trigger={null} style={{
         position: "relative",
-        background: "",
-        display: "none"
+        display: isMovil ? "none" : "",
       }}>
         <div style={{ width: "100%", padding: "1rem", margin: "auto", textAlign: "center" }}>
           <a href={location.origin}>
@@ -91,10 +200,10 @@ const LayoutAntd = ({ children }: any) => {
         </div>
 
         <Menu
-          style={{ background: "", }}
+          style={{}}
           theme="dark"
           mode="inline"
-          defaultSelectedKeys={['/inicio']}
+          selectedKeys={menuActive}
           onClick={(e) => {
             router.push(e.key.replace("/", "#"));
           }}
@@ -127,9 +236,27 @@ const LayoutAntd = ({ children }: any) => {
           ]}
         />
       </Sider>
-      <Layout>
+      <Layout className='layout'>
         <Header style={{ padding: 0, background: colorBgContainer, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <Title level={3} style={{ margin: 0 }}>INGENIERÍA CIVIL TECH</Title>
+          <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+            {isMovil && (
+              <div style={{ flex: '0 0 64px' }}>
+                <Button
+                  type="primary"
+                  icon={isMovil ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+                  onClick={showDrawer}
+                  style={{
+                    fontSize: '16px',
+                    width: 64,
+                    height: 64
+                  }}
+                />
+              </div>
+            )}
+            <div style={{ flex: 1, textAlign: 'center' }}>
+              <Title level={3} style={{ margin: 0 }}>INGENIERÍA CIVIL</Title>
+            </div>
+          </div>
         </Header>
         <Content
           style={{

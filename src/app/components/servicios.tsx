@@ -1,6 +1,7 @@
 "use client";
-import { Badge, Card, Col, Collapse, Divider, Row, Typography } from 'antd'
 import React from 'react';
+import { Badge, Col, Collapse, Divider, Row, Typography } from 'antd';
+
 const { Title } = Typography;
 
 export const servicios = [
@@ -53,10 +54,10 @@ const Servicios = () => {
   return (
     <Row gutter={[16, 16]}>
       <Col xs={24} sm={24} md={24} lg={24}>
-        <Title level={5}>
+        <Title level={5} style={{ textAlign: "center" }}>
           Nos enorgullecemos de ofrecer soluciones integrales en el ámbito de la construcción civil. Con una trayectoria de excelencia y un compromiso inquebrantable con la calidad, nos dedicamos a transformar visiones en realidades tangibles.
         </Title>
-        <Title level={5}>
+        <Title level={5} style={{ textAlign: "center" }}>
           Nuestros servicios abarcan todas las etapas del proceso de construcción, desde la planificación y el diseño hasta la ejecución y la entrega final. Ya sea que se trate de proyectos residenciales, comerciales o industriales, nuestro equipo altamente calificado y experimentado se encarga de cada detalle con precisión y profesionalismo.
         </Title>
       </Col>
