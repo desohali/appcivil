@@ -75,7 +75,11 @@ const LayoutAntd = ({ children }: any) => {
 
   return (
     <Layout>
-      <Sider trigger={null} collapsible collapsed={isMovil} style={{ position: "relative", background: "" }}>
+      <Sider trigger={null} collapsible collapsed={isMovil} style={{
+        position: "relative",
+        background: "",
+        display: "none"
+      }}>
         <div style={{ width: "100%", padding: "1rem", margin: "auto", textAlign: "center" }}>
           <a href={location.origin}>
             <Image src={logo}
@@ -87,7 +91,7 @@ const LayoutAntd = ({ children }: any) => {
         </div>
 
         <Menu
-          style={{ background: "" }}
+          style={{ background: "", }}
           theme="dark"
           mode="inline"
           defaultSelectedKeys={['/inicio']}
