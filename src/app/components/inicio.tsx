@@ -8,22 +8,23 @@ import imagen2 from '../../../public/4.jpg';
 import imagen3 from '../../../public/3.jpg';
 import { servicios as data } from './servicios';
 
+var globalWindow: any = typeof window !== 'undefined' ? window : {};
 
 const Inicio = () => {
 
 
   const [servicio, setServicio] = React.useState<any>(data[data.length - 1]);
 
-  const [isMovil, setCollapsed] = React.useState(window.innerWidth < 768);
+  const [isMovil, setCollapsed] = React.useState(globalWindow?.innerWidth < 768);
   React.useEffect(() => {
     const handleResize = () => {
-      setCollapsed(window.innerWidth < 768);
+      setCollapsed(globalWindow?.innerWidth < 768);
     };
 
-    window.addEventListener('resize', handleResize);
+    globalWindow?.addEventListener('resize', handleResize);
 
     return () => {
-      window.removeEventListener('resize', handleResize);
+      globalWindow?.removeEventListener('resize', handleResize);
     };
   }, []);
 

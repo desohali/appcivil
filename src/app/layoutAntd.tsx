@@ -21,6 +21,8 @@ const { Title } = Typography;
 
 const { Header, Sider, Content } = Layout;
 
+var globalWindow: any = typeof window !== 'undefined' ? window : {};
+
 const LayoutAntd = ({ children }: any) => {
 
   const router = useRouter();
@@ -34,16 +36,16 @@ const LayoutAntd = ({ children }: any) => {
     setloading(false);
   }, []);
 
-  const [isMovil, setCollapsed] = React.useState(window.innerWidth < 768);
+  const [isMovil, setCollapsed] = React.useState(globalWindow?.innerWidth < 768);
   React.useEffect(() => {
     const handleResize = () => {
-      setCollapsed(window.innerWidth < 768);
+      setCollapsed(globalWindow?.innerWidth < 768);
     };
 
-    window.addEventListener('resize', handleResize);
+    globalWindow?.addEventListener('resize', handleResize);
 
     return () => {
-      window.removeEventListener('resize', handleResize);
+      globalWindow?.removeEventListener('resize', handleResize);
     };
   }, []);
 
