@@ -1,95 +1,103 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+"use client";
+import Inicio from "./components/inicio";
+import Nosotros from "./components/nosotros";
+import Servicios from "./components/servicios";
+import Contacto from "./components/contacto";
+import Portafolio from "./components/portafolio";
+import React from "react";
+import { Divider, Typography } from "antd";
+const { Title } = Typography;
+const itemMenu = [
+  { title: 'Inicio', hash: 'inicio' },
+  { title: 'Servicios', hash: 'servicios' },
+  { title: 'Nosotros', hash: 'nosotros' },
+  { title: 'Contacto', hash: 'contacto' },
+];
 
-export default function Home() {
+const App: React.FC = () => {
+
+  const [isMovil, setCollapsed] = React.useState(window.innerWidth < 768);
+  React.useEffect(() => {
+    const handleResize = () => {
+      setCollapsed(window.innerWidth < 768);
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
+  const containerStyles = {
+    width: isMovil ? "100%" : "85%",
+    padding: "1rem 0rem",
+    margin: "auto"
+  };
+
+  // observer
+  const [currentHash, setCurrentHash] = React.useState<any>();
+  React.useEffect(() => {
+    let observerChangeHash: any;
+    itemMenu.forEach(({ hash }) => {
+      const target = document.getElementById(hash) as HTMLElement;
+      observerChangeHash?.observe(target);
+    });
+
+    observerChangeHash = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            //setCurrentHash(entry.target.id);
+            window.history.pushState(null, '', `#${entry.target.id}`);
+          }
+        });
+      },
+      {
+        root: null,
+        rootMargin: '0px',
+        threshold: 0.1,
+      }
+    );
+
+    return () => {
+      //window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
+    <div style={{ width: "100%" }}>
+      <div id="inicio" style={{ width: "100%", padding: "1rem 0rem" }}>
+        <Divider orientation="left"><Title level={4} style={{ marginBottom: 0 }}>INICIO</Title></Divider>
+        <div className="triangle" />
+        <Inicio />
       </div>
 
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
+
+      <div id="servicios" style={{ width: "100%", padding: "1rem 0rem" }}>
+        <Divider orientation="left"><Title level={4} >SERVICIOS</Title></Divider>
+        <div className="triangle" />
+        <div style={containerStyles}><Servicios /></div>
       </div>
 
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
 
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
+      <div id="nosotros" style={{ width: "100%", padding: "1rem 0rem" }}>
+        <Divider orientation="left"><Title level={4} >NOSOTROS</Title></Divider>
+        <div className="triangle" />
+        <div style={containerStyles}><Nosotros /></div>
       </div>
-    </main>
+
+      {/* <div id="portafolio" style={{ width: "100%", background: "red", padding: "1rem 0rem" }}>
+        <Portafolio />
+      </div> */}
+
+      <div id="contacto" style={{ width: "100%", padding: "1rem 0rem" }}>
+        <Divider orientation="left"><Title level={4} >CONTACTO</Title></Divider>
+        <div className="triangle" />
+        <Contacto />
+      </div>
+    </div>
   );
 }
+
+export default App;
